@@ -25,7 +25,8 @@
 ;;; Code:
 
 ;;;###autoload
-(defun slash-parametrize (&optional values-list)
+(defun slash-parametrize ()
+  "Make the current function argument a parametized value."
   (interactive)
   (let ((symbol (current-word)))
     (back-to-indentation)
@@ -37,8 +38,25 @@
       (forward-line 1)
       (forward-char -1)
       (delete-region beg (point)))
-    (insert (format "@slash.parametrize('%s', [%s])" symbol (if values-list values-list "")))
+    (insert (format "@slash.parametrize('%s', [])" symbol))
     (backward-char 2)))
+
+;;;###autoload
+(defun slash-toggle ()
+  "Make the current function argument a toggled value."
+  (interactive)
+  (let ((symbol (current-word)))
+    (save-excursion
+      (back-to-indentation)
+      (forward-line -1)
+      (move-end-of-line nil)
+      (newline-and-indent)
+      (beginning-of-line)
+      (let ((beg (point)))
+        (forward-line 1)
+        (forward-char -1)
+        (delete-region beg (point)))
+      (insert (format "@slash.parameters.toggle('%s')" symbol)))))
 
 (provide 'slash)
 
